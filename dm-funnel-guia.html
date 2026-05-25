@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DM Funnel — La guía</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --surface2: #181818;
+    --accent: #c8f542;
+    --accent2: #f5e642;
+    --text: #f0f0f0;
+    --muted: #888;
+    --border: #222;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* NOISE TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.4;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 40px 60px;
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: -200px;
+    right: -300px;
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(circle, rgba(200,245,66,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .eyebrow::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(72px, 12vw, 140px);
+    line-height: 0.9;
+    letter-spacing: -0.01em;
+    margin-bottom: 40px;
+  }
+
+  .hero h1 span {
+    color: var(--accent);
+    display: block;
+  }
+
+  .hero-desc {
+    font-size: 19px;
+    color: var(--muted);
+    max-width: 560px;
+    font-weight: 300;
+    border-left: 2px solid var(--accent);
+    padding-left: 24px;
+    margin-bottom: 60px;
+    line-height: 1.6;
+  }
+
+  .scroll-hint {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    animation: bounce 2s infinite;
+  }
+
+  .scroll-hint svg {
+    width: 20px;
+    height: 20px;
+    stroke: var(--accent);
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(6px); }
+  }
+
+  /* INTRO BLOCK */
+  .intro {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 80px 40px;
+  }
+
+  .intro-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .intro-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    color: var(--accent);
+    line-height: 1;
+    position: sticky;
+    top: 40px;
+  }
+
+  .intro-text p {
+    color: #ccc;
+    font-weight: 300;
+    margin-bottom: 20px;
+  }
+
+  .intro-text p:last-child { margin-bottom: 0; }
+
+  .intro-text strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* STEPS */
+  .steps {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 100px 40px;
+  }
+
+  .steps-header {
+    margin-bottom: 80px;
+  }
+
+  .steps-header h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(42px, 6vw, 72px);
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+
+  .steps-header p {
+    color: var(--muted);
+    font-size: 15px;
+    letter-spacing: 0.05em;
+  }
+
+  .step {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 40px;
+    margin-bottom: 80px;
+    padding-bottom: 80px;
+    border-bottom: 1px solid var(--border);
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .step.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .step:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .step-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 80px;
+    line-height: 1;
+    color: var(--border);
+    letter-spacing: -0.02em;
+  }
+
+  .step-content h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: 0.01em;
+    margin-bottom: 20px;
+    color: var(--text);
+  }
+
+  .step-content p {
+    color: #bbb;
+    font-weight: 300;
+    margin-bottom: 16px;
+  }
+
+  .step-content p:last-child { margin-bottom: 0; }
+
+  .step-content strong { color: var(--text); font-weight: 500; }
+
+  /* FORMAT CARDS */
+  .format-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 32px;
+  }
+
+  .format-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    transition: border-color 0.3s;
+  }
+
+  .format-card:hover {
+    border-color: var(--accent);
+  }
+
+  .format-icon {
+    font-size: 28px;
+    margin-bottom: 12px;
+  }
+
+  .format-card h4 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: var(--accent);
+    margin-bottom: 8px;
+    letter-spacing: 0.05em;
+  }
+
+  .format-card p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-bottom: 0 !important;
+  }
+
+  /* MANYCHAT FLOW */
+  .flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 32px;
+  }
+
+  .flow-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    position: relative;
+  }
+
+  .flow-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 19px;
+    top: 40px;
+    bottom: -8px;
+    width: 2px;
+    background: var(--border);
+  }
+
+  .flow-dot {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 2px solid var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    color: var(--accent);
+    flex-shrink: 0;
+    z-index: 1;
+  }
+
+  .flow-text {
+    padding: 8px 0 32px;
+  }
+
+  .flow-text strong {
+    display: block;
+    color: var(--text);
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+
+  .flow-text span {
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  /* CALLOUT */
+  .callout {
+    background: var(--accent);
+    color: var(--bg);
+    border-radius: 12px;
+    padding: 32px;
+    margin-top: 32px;
+  }
+
+  .callout p {
+    color: var(--bg) !important;
+    font-weight: 400 !important;
+    font-size: 16px;
+  }
+
+  .callout strong {
+    color: var(--bg) !important;
+    font-weight: 700 !important;
+  }
+
+  /* ANGLES BLOCK */
+  .angles-block {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+    margin-top: 32px;
+  }
+
+  .angles-block h4 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    color: var(--accent);
+    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+  }
+
+  .angle-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .angle-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .angle-row:first-of-type { padding-top: 0; }
+
+  .angle-tag {
+    background: var(--border);
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .angle-row p {
+    font-size: 14px;
+    color: #bbb;
+    margin: 0 !important;
+  }
+
+  /* FINAL SECTION */
+  .final {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 100px 40px;
+  }
+
+  .final-inner {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .final h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(42px, 6vw, 72px);
+    line-height: 1;
+    margin-bottom: 40px;
+  }
+
+  .final h2 span { color: var(--accent); }
+
+  .recap-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 60px;
+  }
+
+  .recap-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    transition: border-color 0.3s;
+  }
+
+  .recap-item:hover { border-color: var(--accent); }
+
+  .recap-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: var(--accent);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .recap-item h4 {
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+
+  .recap-item p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .bottom-line {
+    border-top: 1px solid var(--border);
+    padding-top: 40px;
+    color: var(--muted);
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .bottom-line span { color: var(--accent); }
+
+  /* RESPONSIVE */
+  @media (max-width: 700px) {
+    .intro-inner { grid-template-columns: 1fr; gap: 32px; }
+    .intro-label { position: static; font-size: 36px; }
+    .step { grid-template-columns: 1fr; gap: 16px; }
+    .step-num { font-size: 48px; }
+    .format-grid { grid-template-columns: 1fr; }
+    .recap-grid { grid-template-columns: 1fr; }
+    .hero { padding: 60px 24px 40px; }
+    .steps { padding: 60px 24px; }
+    .intro { padding: 60px 24px; }
+    .final { padding: 60px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="eyebrow">Guía práctica para coaches y consultores</div>
+  <h1>DM<span>Funnel</span></h1>
+  <p class="hero-desc">
+    El sistema que usa Instagram para atraer leads calificados, convertirlos automáticamente en conversaciones y cerrarlos en llamadas — sin depender de ads, agencias ni suerte.
+  </p>
+  <div class="scroll-hint">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 5v14M5 12l7 7 7-7"/>
+    </svg>
+    Empezar a leer
+  </div>
+</section>
+
+<!-- INTRO -->
+<section class="intro">
+  <div class="intro-inner">
+    <div class="intro-label">¿Qué es el DM Funnel?</div>
+    <div class="intro-text">
+      <p>Es un sistema donde tu contenido de Instagram hace el trabajo de atraer y filtrar clientes. La gente te encuentra por un reel, te empieza a seguir, consume tus historias y carruseles durante días, y cuando ManyChat abre una conversación en el DM <strong>ya saben quién sos y qué vendés.</strong></p>
+      <p>No llegaron fríos. Llegaron habiendo consumido tu contenido, confiando en vos, viéndote como la opción. Eso hace que la llamada sea más fácil y el cierre también.</p>
+      <p>La diferencia con otros sistemas es que acá no le estás vendiendo a desconocidos. Le estás vendiendo a personas que ya te siguieron, ya te leyeron, ya te vieron hablar de su problema específico varias veces. <strong>Cuando llegan a una conversación en el DM ya recorrieron un camino con vos. Y eso cambia todo.</strong></p>
+    </div>
+  </div>
+</section>
+
+<!-- STEPS -->
+<section class="steps">
+  <div class="steps-header">
+    <h2>Cómo aplicarlo</h2>
+    <p>Paso a paso, en orden. No saltees nada.</p>
+  </div>
+
+  <!-- PASO 1 -->
+  <div class="step">
+    <div class="step-num">01</div>
+    <div class="step-content">
+      <h3>Optimizá tu perfil</h3>
+      <p>Antes de subir cualquier contenido, tu perfil tiene que responder tres preguntas en menos de cinco segundos: <strong>a quién ayudás, qué resultado le das y con quién ya trabajaste.</strong> Si alguien nuevo llega a tu perfil y no entiende eso de un vistazo, lo perdiste.</p>
+      <p>El nombre tiene que ser claro y fácil de encontrar. La bio tiene que mostrar la transformación que das, no lo que sos. Y las historias destacadas o los posts fijados tienen que cubrir quién sos, qué hacés y qué lograste con clientes anteriores.</p>
+      <p>Esos tres puntos son lo que convierte a un visitante nuevo en un seguidor que confía.</p>
+    </div>
+  </div>
+
+  <!-- PASO 2 -->
+  <div class="step">
+    <div class="step-num">02</div>
+    <div class="step-content">
+      <h3>Armá ángulos ganadores</h3>
+      <p>Este es el paso más importante y el que más gente hace mal. No se trata de subir contenido todos los días — se trata de <strong>subir el contenido correcto.</strong></p>
+      <p>Un ángulo ganador es el tema de un video que le habla directo al problema específico de tu cliente ideal y hace que pare de scrollear. No es hablar de lo que vos creés que es importante — es hablar de lo que tu cliente ya está pensando, lo que le preocupa, lo que busca resolver.</p>
+
+      <div class="angles-block">
+        <h4>Cómo encontrar tus ángulos</h4>
+        <div class="angle-row">
+          <span class="angle-tag">Paso 1</span>
+          <p>Entrá a los DMs de tus clientes actuales y fijate qué contenido los trajo a tu perfil por primera vez. Ese es el ángulo que atrae.</p>
+        </div>
+        <div class="angle-row">
+          <span class="angle-tag">Paso 2</span>
+          <p>Fijate qué contenido vieron justo antes de agendar una llamada o comprarte. Ese es el ángulo que convierte.</p>
+        </div>
+        <div class="angle-row">
+          <span class="angle-tag">Paso 3</span>
+          <p>Anotá el tema con dos o tres palabras y empezá a identificar patrones. Ahí están tus ángulos ganadores.</p>
+        </div>
+        <div class="angle-row">
+          <span class="angle-tag">Paso 4</span>
+          <p>Todo el contenido que subas tiene que girar alrededor de esas narrativas. No cambies de tema cada semana — repetí lo que ya probaste que funciona con distintos formatos y distintos hooks.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PASO 3 -->
+  <div class="step">
+    <div class="step-num">03</div>
+    <div class="step-content">
+      <h3>Usá cada formato para lo que sirve</h3>
+      <p>Cada herramienta de Instagram tiene una función específica dentro del sistema. Mezclarlas o usarlas mal es uno de los errores más comunes.</p>
+
+      <div class="format-grid">
+        <div class="format-card">
+          <div class="format-icon">🎬</div>
+          <h4>Reels</h4>
+          <p>Atraen gente nueva que no te conoce. Su único objetivo es que alguien que nunca te vio pare de scrollear y vaya a tu perfil. No son para vender — son para atraer.</p>
+        </div>
+        <div class="format-card">
+          <div class="format-icon">📄</div>
+          <h4>Carruseles</h4>
+          <p>Generan comentarios de tu cliente ideal. Cada comentario con una palabra clave es un lead que ManyChat convierte en conversación automáticamente.</p>
+        </div>
+        <div class="format-card">
+          <div class="format-icon">⚡</div>
+          <h4>Historias</h4>
+          <p>Convierten a los que ya te siguen. Acá sí podés generar conversaciones, agendar llamadas y empujar hacia una acción concreta.</p>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-top: 24px;">
+        <p><strong>Importante:</strong> No podés estar vendiendo en historias todos los días — quemás a tu audiencia. Hay momentos en el mes para convertir de forma directa y momentos para nutrir y construir confianza. Cuando sabés cuándo hacer cada cosa, las historias se vuelven la parte más potente del sistema.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PASO 4 -->
+  <div class="step">
+    <div class="step-num">04</div>
+    <div class="step-content">
+      <h3>Configurá ManyChat</h3>
+      <p>ManyChat es el engranaje que convierte todo el contenido en conversaciones. Sin él, los comentarios y las reacciones quedan en el aire y se pierden. Con él, cada interacción de tu cliente ideal se convierte automáticamente en una apertura de DM.</p>
+
+      <div class="flow">
+        <div class="flow-step">
+          <div class="flow-dot">1</div>
+          <div class="flow-text">
+            <strong>Alguien comenta una palabra clave</strong>
+            <span>En tu reel, carrusel o reacciona a una historia.</span>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-dot">2</div>
+          <div class="flow-text">
+            <strong>ManyChat responde el comentario</strong>
+            <span>Le deja una respuesta automática y abre una conversación en el DM.</span>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-dot">3</div>
+          <div class="flow-text">
+            <strong>Calificación automática</strong>
+            <span>Le hace dos o tres preguntas simples para entender su situación y ver si es un cliente ideal.</span>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-dot">4</div>
+          <div class="flow-text">
+            <strong>Agenda la llamada</strong>
+            <span>Si es un cliente calificado, lo lleva a agendar. Si no, lo filtra solo.</span>
+          </div>
+        </div>
+      </div>
+
+      <p style="margin-top: 24px;">Esto reemplaza lo que haría un setter humano en la etapa de apertura, pero sin los errores, sin los tiempos muertos y sin el costo fijo. <strong>Es el mejor empleado que puede tener tu negocio hoy.</strong></p>
+    </div>
+  </div>
+
+  <!-- PASO 5 -->
+  <div class="step">
+    <div class="step-num">05</div>
+    <div class="step-content">
+      <h3>Trabajá los DMs</h3>
+      <p>Una vez que ManyChat abrió la conversación y calificó a la persona, alguien tiene que trabajarla. Ya sea vos o un setter, la estructura es simple: <strong>entender el problema de la persona, confirmar que es un cliente calificado y llevarla a agendar una llamada.</strong> Nada más.</p>
+      <p>No es el momento de vender — es el momento de escuchar y agendar. La diferencia entre un lead que llega por DM Funnel y uno que llega por un ad frío es enorme. Este ya te conoce, ya consumió tu contenido, ya sabe de qué hablás. Eso hace que la conversación sea más natural, que el show rate sea más alto y que el cierre en la llamada requiera mucho menos esfuerzo.</p>
+    </div>
+  </div>
+
+  <!-- PASO 6 -->
+  <div class="step">
+    <div class="step-num">06</div>
+    <div class="step-content">
+      <h3>Escalá con ads</h3>
+      <p>Cuando el sistema ya está funcionando — cuando sabés qué ángulos atraen a tu cliente ideal, los comentarios están llegando, ManyChat está abriendo conversaciones y las llamadas se están cerrando — <strong>ahí y solo ahí tiene sentido prender los ads.</strong></p>
+      <p>Pero no para reemplazar el sistema orgánico. Para llevar más gente al mismo perfil que ya probaste que convierte. Los ads en este contexto funcionan como un amplificador: agarran el contenido orgánico que ya demostró que funciona y lo muestran a más personas.</p>
+
+      <div class="callout">
+        <p><strong>Escalás lo que ya convierte, no apostás a ciegas con contenido que nunca probaste.</strong></p>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- FINAL -->
+<section class="final">
+  <div class="final-inner">
+    <h2>El orden<span> importa</span></h2>
+
+    <div class="recap-grid">
+      <div class="recap-item">
+        <div class="recap-num">01</div>
+        <div>
+          <h4>Perfil optimizado</h4>
+          <p>A quién ayudás, qué resultado das, con quién trabajaste.</p>
+        </div>
+      </div>
+      <div class="recap-item">
+        <div class="recap-num">02</div>
+        <div>
+          <h4>Ángulos ganadores</h4>
+          <p>El contenido correcto, no contenido por subir.</p>
+        </div>
+      </div>
+      <div class="recap-item">
+        <div class="recap-num">03</div>
+        <div>
+          <h4>Cada formato para lo que sirve</h4>
+          <p>Reels atraen, carruseles generan leads, historias convierten.</p>
+        </div>
+      </div>
+      <div class="recap-item">
+        <div class="recap-num">04</div>
+        <div>
+          <h4>ManyChat automatiza todo</h4>
+          <p>Comentarios, DMs, calificación y agenda sin intervención humana.</p>
+        </div>
+      </div>
+      <div class="recap-item">
+        <div class="recap-num">05</div>
+        <div>
+          <h4>DMs trabajados</h4>
+          <p>Escuchar, calificar, agendar. No vender en esta etapa.</p>
+        </div>
+      </div>
+      <div class="recap-item">
+        <div class="recap-num">06</div>
+        <div>
+          <h4>Ads para escalar</h4>
+          <p>Solo cuando el sistema orgánico ya funciona y convierte.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-line">
+      <span>DM Funnel — Guía práctica</span>
+      <span>2026</span>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Scroll reveal
+  const steps = document.querySelectorAll('.step');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  steps.forEach(step => observer.observe(step));
+</script>
+
+</body>
+</html>
